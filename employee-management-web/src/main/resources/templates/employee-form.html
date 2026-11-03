@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${employee.id == null ? 'Add Employee' : 'Edit Employee'} + ' - EmployeeHub'">Employee Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard" class="brand">
+        <div class="brand-icon">EM</div>
+        <span>EmployeeHub</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/employees" class="active">Employees</a>
+        <a href="/departments">Departments</a>
+        <a href="/api-playground">API Playground</a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-badge">
+            <span th:text="${username}">User</span>
+            <span class="role-tag"
+                  th:classappend="${role == 'HR' ? 'role-hr' : (role == 'MANAGER' ? 'role-manager' : 'role-employee')}"
+                  th:text="${role}">
+                ROLE
+            </span>
+        </div>
+        <a href="/logout" class="nav-links logout-btn">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="form-card">
+        <div style="margin-bottom: 24px;">
+            <h1 class="page-title" style="font-size: 1.5rem;" th:text="${employee.id == null ? 'Add New Employee' : 'Edit Employee Details'}">
+                Employee Form
+            </h1>
+            <p class="page-subtitle" th:text="${employee.id == null ? 'Enter details to register a new team member' : 'Update the records for employee #' + employee.id}">
+                Fill in the information below
+            </p>
+        </div>
+
+        <form th:action="${employee.id == null} ? @{/employees/save} : @{/employees/update/{id}(id=${employee.id})}"
+              method="post">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" th:value="${employee.name}" placeholder="e.g. Sarah Connor" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Work Email</label>
+                <input type="email" id="email" name="email" th:value="${employee.email}" placeholder="s.connor@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="salary">Annual Salary (USD)</label>
+                <input type="number" id="salary" name="salary" step="100" th:value="${employee.salary}" placeholder="e.g. 75000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="departmentId">Department</label>
+                <select id="departmentId" name="departmentId" required>
+                    <option value="">-- Choose Department --</option>
+                    <option th:each="dept : ${departments}"
+                            th:value="${dept.id}"
+                            th:text="${dept.name}"
+                            th:selected="${employee.department != null and employee.department.id == dept.id}">
+                        Engineering
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" style="flex:1; justify-content:center;">
+                    Save Employee
+                </button>
+                <a href="/employees" class="btn btn-outline" style="justify-content:center;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

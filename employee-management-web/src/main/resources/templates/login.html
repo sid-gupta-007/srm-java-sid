@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Employee Management Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="login-wrap">
+    <div class="login-card">
+        <div class="login-header">
+            <div style="display:flex; justify-content:center; margin-bottom:12px;">
+                <div class="brand-icon" style="width:48px; height:48px; font-size:1.4rem;">EM</div>
+            </div>
+            <h1>Employee Portal</h1>
+            <p>Sign in with your role credentials</p>
+        </div>
+
+        <div th:if="${error}" class="alert-error" th:text="${error}">
+            Invalid credentials
+        </div>
+
+        <form id="loginForm" th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="e.g. hr, manager, employee" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password (default: 1234)" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">
+                Sign In
+            </button>
+        </form>
+
+        <div class="demo-accounts">
+            <h4>Quick Demo Sign-in</h4>
+            <div class="quick-login-grid">
+                <button type="button" class="quick-btn" onclick="quickFill('hr', '1234')">
+                    👑 HR
+                </button>
+                <button type="button" class="quick-btn" onclick="quickFill('manager', '1234')">
+                    💼 Manager
+                </button>
+                <button type="button" class="quick-btn" onclick="quickFill('employee', '1234')">
+                    👤 Employee
+                </button>
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px; text-align:center;">
+                Click any role above to auto-fill (password: <code>1234</code>)
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+function quickFill(user, pass) {
+    document.getElementById('username').value = user;
+    document.getElementById('password').value = pass;
+    document.getElementById('loginForm').submit();
+}
+</script>
+
+</body>
+</html>

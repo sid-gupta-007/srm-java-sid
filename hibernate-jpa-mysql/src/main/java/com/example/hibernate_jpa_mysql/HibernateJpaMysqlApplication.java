@@ -1,13 +1,13 @@
-package com.example.employee_management_web;
+package com.example.hibernate_jpa_mysql;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EmployeeManagementWebApplication {
+public class HibernateJpaMysqlApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmployeeManagementWebApplication.class, args);
+		SpringApplication.run(HibernateJpaMysqlApplication.class, args);
 	}
 
 }

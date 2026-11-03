@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Playground - EmployeeHub</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .tester-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+        .response-box {
+            background: #0f172a;
+            color: #38bdf8;
+            font-family: monospace;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 220px;
+            overflow: auto;
+            white-space: pre-wrap;
+            display: none;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard" class="brand">
+        <div class="brand-icon">EM</div>
+        <span>EmployeeHub</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/employees">Employees</a>
+        <a href="/departments">Departments</a>
+        <a href="/api-playground" class="active">API Playground</a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-badge">
+            <span th:text="${username}">User</span>
+            <span class="role-tag"
+                  th:classappend="${role == 'HR' ? 'role-hr' : (role == 'MANAGER' ? 'role-manager' : 'role-employee')}"
+                  th:text="${role}">
+                ROLE
+            </span>
+        </div>
+        <a href="/logout" class="nav-links logout-btn">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">REST API Playground</h1>
+            <p class="page-subtitle">Test and experiment with the newly integrated JSON endpoints in real time</p>
+        </div>
+    </div>
+
+    <!-- API Item 1 -->
+    <div class="api-card">
+        <div>
+            <span class="api-method method-get">GET</span>
+            <span class="api-endpoint">/api/employees</span>
+            <span style="color:var(--text-muted); font-size:0.88rem; margin-left:12px;">Fetch all employees (supports ?search=, ?page=, ?size=)</span>
+        </div>
+        <div class="tester-box">
+            <button class="btn btn-outline btn-sm" onclick="callApi('/api/employees', 'res1')">Run GET /api/employees</button>
+            <button class="btn btn-outline btn-sm" onclick="callApi('/api/employees?search=IT', 'res1')">Filter ?search=IT</button>
+        </div>
+        <pre id="res1" class="response-box"></pre>
+    </div>
+
+    <!-- API Item 2 -->
+    <div class="api-card">
+        <div>
+            <span class="api-method method-get">GET</span>
+            <span class="api-endpoint">/api/employees/stats</span>
+            <span style="color:var(--text-muted); font-size:0.88rem; margin-left:12px;">Get summary analytics and salary averages</span>
+        </div>
+        <div class="tester-box">
+            <button class="btn btn-outline btn-sm" onclick="callApi('/api/employees/stats', 'res2')">Run GET /api/employees/stats</button>
+        </div>
+        <pre id="res2" class="response-box"></pre>
+    </div>
+
+    <!-- API Item 3 -->
+    <div class="api-card">
+        <div>
+            <span class="api-method method-get">GET</span>
+            <span class="api-endpoint">/api/departments</span>
+            <span style="color:var(--text-muted); font-size:0.88rem; margin-left:12px;">List all company departments</span>
+        </div>
+        <div class="tester-box">
+            <button class="btn btn-outline btn-sm" onclick="callApi('/api/departments', 'res3')">Run GET /api/departments</button>
+        </div>
+        <pre id="res3" class="response-box"></pre>
+    </div>
+
+    <!-- API Item 4: POST /api/employees -->
+    <div class="api-card">
+        <div>
+            <span class="api-method method-post">POST</span>
+            <span class="api-endpoint">/api/employees</span>
+            <span style="color:var(--text-muted); font-size:0.88rem; margin-left:12px;">Create an employee via JSON payload</span>
+        </div>
+        <div class="tester-box">
+            <button class="btn btn-primary btn-sm" onclick="createSampleEmployee('res4')">Test POST Create Employee</button>
+        </div>
+        <pre id="res4" class="response-box"></pre>
+    </div>
+
+    <!-- API Item 5: JWT Auth Login -->
+    <div class="api-card">
+        <div>
+            <span class="api-method method-post">POST</span>
+            <span class="api-endpoint">/api/auth/login</span>
+            <span style="color:var(--text-muted); font-size:0.88rem; margin-left:12px;">Generate a JWT Token via JSON credentials</span>
+        </div>
+        <div class="tester-box">
+            <button class="btn btn-outline btn-sm" onclick="loginApi('hr', '1234', 'res5')">Test Login as HR (Get JWT)</button>
+            <button class="btn btn-outline btn-sm" onclick="loginApi('manager', '1234', 'res5')">Test Login as Manager</button>
+        </div>
+        <pre id="res5" class="response-box"></pre>
+    </div>
+
+    <!-- cURL cheatsheet -->
+    <div style="margin-top: 30px;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 12px; font-weight: 700;">Terminal / Postman cURL Examples</h3>
+        <pre class="code-box">
+# 1. Fetch all employees in JSON
+curl -X GET http://localhost:8080/api/employees
+
+# 2. Search employees
+curl -X GET "http://localhost:8080/api/employees?search=Alice"
+
+# 3. Create employee via POST JSON
+curl -X POST http://localhost:8080/api/employees \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Sam Taylor","email":"sam@example.com","salary":64000,"departmentId":1}'
+
+# 4. Authenticate and get JWT token
+curl -X POST http://localhost:8080/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"hr","password":"1234"}'
+        </pre>
+    </div>
+</div>
+
+<script>
+function callApi(url, targetId) {
+    const el = document.getElementById(targetId);
+    el.style.display = 'block';
+    el.innerText = 'Loading...';
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            el.innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            el.innerText = 'Error: ' + err;
+        });
+}
+
+function createSampleEmployee(targetId) {
+    const el = document.getElementById(targetId);
+    el.style.display = 'block';
+    el.innerText = 'Creating sample employee...';
+    fetch('/api/employees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: 'Jordan Lee',
+            email: 'jordan.' + Date.now().toString().slice(-4) + '@example.com',
+            salary: 78500,
+            departmentId: 1
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        el.innerText = JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+        el.innerText = 'Error: ' + err;
+    });
+}
+
+function loginApi(user, pass, targetId) {
+    const el = document.getElementById(targetId);
+    el.style.display = 'block';
+    el.innerText = 'Authenticating...';
+    fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass })
+    })
+    .then(res => res.json())
+    .then(data => {
+        el.innerText = JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+        el.innerText = 'Error: ' + err;
+    });
+}
+</script>
+
+</body>
+</html>
+

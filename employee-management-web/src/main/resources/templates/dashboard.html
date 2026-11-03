@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Employee Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard" class="brand">
+        <div class="brand-icon">EM</div>
+        <span>EmployeeHub</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/employees">Employees</a>
+        <a href="/departments">Departments</a>
+        <a href="/api-playground">API Playground</a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-badge">
+            <span th:text="${username}">User</span>
+            <span class="role-tag"
+                  th:classappend="${role == 'HR' ? 'role-hr' : (role == 'MANAGER' ? 'role-manager' : 'role-employee')}"
+                  th:text="${role}">
+                ROLE
+            </span>
+        </div>
+        <a href="/logout" class="nav-links logout-btn">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Executive Dashboard</h1>
+            <p class="page-subtitle">Welcome back, <strong th:text="${username}">User</strong>! Here's an overview of your organization.</p>
+        </div>
+        <div th:if="${role == 'HR'}">
+            <a href="/employees/new" class="btn btn-primary">+ Add New Employee</a>
+        </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">👥</div>
+            <div class="stat-info">
+                <div class="stat-value" th:text="${totalEmployees}">0</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon purple">🏢</div>
+            <div class="stat-info">
+                <div class="stat-value" th:text="${totalDepartments}">0</div>
+                <div class="stat-label">Active Departments</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">💰</div>
+            <div class="stat-info">
+                <div class="stat-value" th:text="'$' + ${#numbers.formatDecimal(averageSalary, 0, 'COMMA', 0, 'POINT')}">$0</div>
+                <div class="stat-label">Average Annual Salary</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon amber">🛡️</div>
+            <div class="stat-info">
+                <div class="stat-value" style="font-size:1.3rem;" th:text="${role}">ROLE</div>
+                <div class="stat-label">Your Active Role</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Actions -->
+    <div class="cards-grid">
+        <a href="/employees" class="action-card">
+            <h3>👥 Employee Directory</h3>
+            <p>View, search, filter, sort and manage employee records with salary and department info.</p>
+        </a>
+
+        <a href="/departments" class="action-card">
+            <h3>🏢 Departments</h3>
+            <p>Inspect organization departments and team distribution counts across divisions.</p>
+        </a>
+
+        <a href="/api-playground" class="action-card">
+            <h3>⚡ REST API Playground</h3>
+            <p>Experiment with JSON REST endpoints for employees, departments, stats, and JWT auth.</p>
+        </a>
+    </div>
+
+    <!-- Quick Department Summary -->
+    <div style="margin-top: 36px;">
+        <h2 style="font-size: 1.25rem; margin-bottom: 14px; font-weight: 700;">Department Breakdown</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Headcount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="entry : ${departmentCounts}">
+                        <td style="font-weight: 600;" th:text="${entry.key}">IT</td>
+                        <td>
+                            <span class="badge-dept" th:text="${entry.value} + ' member(s)'">3 members</span>
+                        </td>
+                        <td><span style="color:var(--success); font-weight: 600;">● Active</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

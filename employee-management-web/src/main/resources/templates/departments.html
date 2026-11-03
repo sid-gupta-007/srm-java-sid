@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments - EmployeeHub</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard" class="brand">
+        <div class="brand-icon">EM</div>
+        <span>EmployeeHub</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/employees">Employees</a>
+        <a href="/departments" class="active">Departments</a>
+        <a href="/api-playground">API Playground</a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-badge">
+            <span th:text="${username}">User</span>
+            <span class="role-tag"
+                  th:classappend="${role == 'HR' ? 'role-hr' : (role == 'MANAGER' ? 'role-manager' : 'role-employee')}"
+                  th:text="${role}">
+                ROLE
+            </span>
+        </div>
+        <a href="/logout" class="nav-links logout-btn">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Departments</h1>
+            <p class="page-subtitle">Organizational divisions and department structures</p>
+        </div>
+    </div>
+
+    <!-- Create Department Card (HR only) -->
+    <div th:if="${role == 'HR'}" class="filter-bar" style="margin-bottom: 24px;">
+        <form th:action="@{/departments/save}" method="post" style="display:flex; gap:12px; align-items:center; width:100%;">
+            <input type="text" name="name" placeholder="Enter new department name (e.g. Marketing, Legal)..." required style="flex:1;">
+            <button type="submit" class="btn btn-primary">+ Add Department</button>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Department Name</th>
+                    <th>Total Staff</th>
+                    <th style="width: 140px; text-align: right;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="dept : ${departments}">
+                    <td style="font-weight: 600; color: var(--text-muted);" th:text="'#' + ${dept.id}">#1</td>
+                    <td style="font-weight: 600;">
+                        <span class="badge-dept"
+                              th:classappend="${dept.name == 'IT' ? 'badge-it' : (dept.name == 'HR' ? 'badge-hr' : 'badge-finance')}"
+                              th:text="${dept.name}">
+                            IT
+                        </span>
+                    </td>
+                    <td>
+                        <span th:text="${departmentCounts != null and departmentCounts.containsKey(dept.name) ? departmentCounts.get(dept.name) + ' employees' : '0 employees'}">
+                            3 employees
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <span style="color:var(--success); font-weight:600; font-size:0.85rem;">● Active</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
