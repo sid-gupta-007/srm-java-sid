@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Appointment Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Appointment Management</h1>
+    <a href="/">Home</a>
+
+    <h2>Book Appointment</h2>
+    <form action="/appointments/save" method="post">
+        <label>Select Doctor</label>
+        <select name="doctorId" required>
+            <option value="">Select Doctor</option>
+            <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
+        </select>
+
+        <label>Select Patient</label>
+        <select name="patientId" required>
+            <option value="">Select Patient</option>
+            <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.name}"></option>
+        </select>
+
+        <label>Appointment Date and Time</label>
+        <input type="datetime-local" name="appointmentDate" required>
+
+        <label>Reason</label>
+        <input type="text" name="reason" placeholder="Enter appointment reason" required>
+
+        <button type="submit">Book Appointment</button>
+    </form>
+
+    <h2>Appointment List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a : ${appointments}">
+            <td th:text="${a.id}"></td>
+            <td th:text="${a.patient.name}"></td>
+            <td th:text="${a.doctor.name}"></td>
+            <td th:text="${a.departmentNames}"></td>
+            <td th:text="${a.appointmentDate}"></td>
+            <td th:text="${a.status}"></td>
+            <td>
+                <form th:if="${a.status == 'BOOKED'}"
+                      th:action="@{/appointments/{id}/cancel(id=${a.id})}" method="post">
+                    <button type="submit">Cancel</button>
+                </form>
+                <span th:if="${a.status == 'CANCELLED'}">Cancelled</span>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(appointments)}">
+            <td colspan="7">No appointments found.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

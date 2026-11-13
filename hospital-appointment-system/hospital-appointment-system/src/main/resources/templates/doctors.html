@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Doctor Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Doctor Management</h1>
+
+    <a href="/">Home</a>
+
+    <h2>Register Doctor</h2>
+
+    <form action="/doctors/save" method="post">
+
+        <label>Doctor Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Specialization</label>
+        <input type="text" name="specialization" required>
+
+        <label>Select Departments</label>
+
+        <select name="departmentIds" multiple required>
+
+            <option th:each="d : ${departments}"
+                    th:value="${d.id}"
+                    th:text="${d.name}">
+            </option>
+
+        </select>
+
+        <small>Hold Ctrl to select multiple departments.</small>
+
+        <button type="submit">Save Doctor</button>
+
+    </form>
+
+    <h2>Doctor List</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Specialization</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="d : ${doctors}">
+                <td th:text="${d.id}"></td>
+                <td th:text="${d.name}"></td>
+                <td th:text="${d.email}"></td>
+                <td th:text="${d.specialization}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

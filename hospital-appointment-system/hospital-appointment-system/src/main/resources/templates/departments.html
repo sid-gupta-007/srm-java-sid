@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Department Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Department Management</h1>
+
+    <a href="/">Home</a>
+
+    <h2>Add Department</h2>
+
+    <form action="/departments/save" method="post">
+
+        <label>Department Name</label>
+        <input type="text" name="name"
+               placeholder="Enter department name" required>
+
+        <label>Description</label>
+        <input type="text" name="description"
+               placeholder="Enter description">
+
+        <button type="submit">Save Department</button>
+
+    </form>
+
+    <h2>Department List</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="d : ${departments}">
+                <td th:text="${d.id}"></td>
+                <td th:text="${d.name}"></td>
+                <td th:text="${d.description}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
